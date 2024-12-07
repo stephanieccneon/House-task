@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - Houseplant Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="javascript:void(0)" onclick="window.history.back()">
+                <img src="images/back.png" alt="Back" class="nav-icon">
+            </a>
+            <a href="index.html">
+                <img src="images/homebutton.png" alt="Home" class="nav-icon">
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="plant-info.html?id=PLANT_ID" onclick="this.href=`plant-info.html?id=${config.PLANT_OF_DAY_ID}`">
+                <span class="nav-text">Plant of the day</span>
+                <img src="images/plant.png" alt="Plant of the day" class="nav-icon-only">
+            </a>
+            <a href="contact.html">
+                <span class="nav-text">Contact us</span>
+                <img src="images/contact.png" alt="Contact" class="nav-icon-only">
+            </a>
+            <a href="about.html">
+                <span class="nav-text">About us</span>
+                <img src="images/about.png" alt="About" class="nav-icon-only">
+            </a>
+        </div>
+    </nav>
+
+    <form id="searchForm" class="search-container">
+        <input type="text" placeholder="Search for a houseplant" id="searchInput">
+        <img src="images/search.png" alt="Search" class="search-icon">
+    </form>
+
+    <div class="results-count">
+        <script>
+            document.write(`${results.total} results for "${searchQuery}"`);
+        </script>
+    </div>
+    <div class="search-results"></div>
+
+    <script>
+        async function searchPlants(query) {
+            try {
+                const response = await fetch(`https://perenual.com/api/species-list?key=${config.API_KEY}&q=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('API request failed');
+                return await response.json();
+            } catch (error) {
+                console.error('Error:', error);
+                return null;
+            }
+        }
+
+        function toProperCase(str) {
+            return str.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
+
+        function displayResults(results) {
+            const resultsCount = document.querySelector('.results-count');
+            resultsCount.textContent = `${results.data.length} results for "${document.getElementById('searchInput').value}"`;
+            
+            const resultsContainer = document.querySelector('.search-results');
+            resultsContainer.innerHTML = '';
+            
+            results.data.forEach(plant => {
+                const properName = toProperCase(plant.common_name);
+                const imageSrc = plant.default_image?.thumbnail || plant.default_image?.regular_url || plant.default_image?.original_url || 'images/plantplaceholder.png';
+                
+                const div = document.createElement('div');
+                div.className = 'plant-result';
+                div.innerHTML = `
+                    <img src="${imageSrc}" 
+                         alt="${properName}"
+                         onerror="this.onerror=null; this.src='images/plantplaceholder.png';">
+                    <div class="plant-info">
+                        <h2>${properName}</h2>
+                        <p>${plant.scientific_name}</p>
+                    </div>
+                `;
+                div.onclick = () => {
+                    window.location.href = `plant-info.html?id=${plant.id}`;
+                };
+                resultsContainer.appendChild(div);
+            });
+        }
+
+        window.addEventListener('load', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q');
+            if (query) {
+                document.getElementById('searchInput').value = query;
+                const results = await searchPlants(query);
+                displayResults(results);
+            }
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+
+        document.querySelector('.search-icon').addEventListener('click', function(e) {
+            e.preventDefault();
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+    </script>
+</body>
+</html> 

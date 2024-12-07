@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Houseplant Assistant</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="javascript:void(0)" onclick="window.history.back()">
+                <img src="images/back.png" alt="Back" class="nav-icon">
+            </a>
+            <a href="index.html">
+                <img src="images/homebutton.png" alt="Home" class="nav-icon">
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="plant-info.html?id=PLANT_ID" onclick="this.href=`plant-info.html?id=${config.PLANT_OF_DAY_ID}`">
+                <span class="nav-text">Plant of the day</span>
+                <img src="images/plant.png" alt="Plant of the day" class="nav-icon-only">
+            </a>
+            <a href="contact.html">
+                <span class="nav-text">Contact us</span>
+                <img src="images/contact.png" alt="Contact" class="nav-icon-only">
+            </a>
+            <a href="about.html">
+                <span class="nav-text">About us</span>
+                <img src="images/about.png" alt="About" class="nav-icon-only">
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Contact us</h1>
+        <form class="contact-form" id="contactForm" action="https://formspree.io/f/movqkayn" method="POST">
+            <input type="email" name="email" id="emailInput" placeholder="Email address" required>
+            <select name="category" id="categoryInput" required>
+                <option value="">Select purpose</option>
+                <option value="support">Technical Support</option>
+                <option value="feedback">Feedback</option>
+                <option value="other">Other</option>
+            </select>
+            <textarea name="message" id="messageInput" placeholder="Enter message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div class="popup" id="successPopup">
+            <div class="popup-content">
+                <h2>Thank You!</h2>
+                <p>Your message has been sent successfully.</p>
+                <button onclick="closePopup()">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    this.reset();
+                    document.getElementById('successPopup').style.display = 'block';
+                } else {
+                    throw new Error(data.error || 'Form submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error details:', error);
+                alert('Sorry, there was a problem submitting your form. Please try again.');
+            });
+        });
+
+        function closePopup() {
+            document.getElementById('successPopup').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const popup = document.getElementById('successPopup');
+            if (event.target == popup) {
+                popup.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

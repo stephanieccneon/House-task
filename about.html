@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Houseplant Assistant</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="javascript:void(0)" onclick="window.history.back()">
+                <img src="images/back.png" alt="Back" class="nav-icon">
+            </a>
+            <a href="index.html">
+                <img src="images/homebutton.png" alt="Home" class="nav-icon">
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="plant-info.html?id=PLANT_ID" onclick="this.href=`plant-info.html?id=${config.PLANT_OF_DAY_ID}`">
+                <span class="nav-text">Plant of the day</span>
+                <img src="images/plant.png" alt="Plant of the day" class="nav-icon-only">
+            </a>
+            <a href="contact.html">
+                <span class="nav-text">Contact us</span>
+                <img src="images/contact.png" alt="Contact" class="nav-icon-only">
+            </a>
+            <a href="about.html">
+                <span class="nav-text">About us</span>
+                <img src="images/about.png" alt="About" class="nav-icon-only">
+            </a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>About us</h1>
+        <div class="about-container">
+            <div class="about-text">
+                <p>Welcome to Houseplant Assistant! 🌱</p>
+                
+                <p>We are a team of 4 students from Simon Fraser University, working on this project for CMPT 276 - Introduction to Software Engineering. Our goal was to create something useful while learning about web development and API integration.</p>
+                
+                <p>Why houseplants? Because we believe everyone deserves a bit of nature in their living space! Whether you're a first-time plant parent or an experienced grower, keeping track of plant care can be tricky.</p>
+                
+                <p>Our app uses the Perenual Plant API for our database (we're using the free version, so some plants are unfortunately behind a paywall (╥﹏╥)). You can:</p>
+                <ul>
+                    <li>Search for houseplants</li>
+                    <li>Set up watering reminders in Google Tasks</li>
+                    <li>Discover a new "Plant of the Day" every day</li>
+                </ul>
+                
+                <p>We hope this app helps make plant care a little easier and more enjoyable for everyone. Happy growing! 🌿</p>
+                
+                <p class="team-note">CMPT 276 - 02 Peaks</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.plant-of-day-link').forEach(link => {
+            link.href = `plant-info.html?id=${config.PLANT_OF_DAY_ID}`;
+        });
+    });
+    </script>
+</body>
+</html> 
